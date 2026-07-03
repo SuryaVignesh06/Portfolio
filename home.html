@@ -644,15 +644,9 @@
       bottom: 28px;
       left: 50% !important;
       transform: translateX(-50%) translateY(80px) translateZ(0) !important;
-      /* Include GPU hint here */
-      background: linear-gradient(180deg, #fdfdfd 0%, #e0e0e0 100%);
-      border: 1px solid #b3b3b3;
-      border-top: 1px solid #ffffff;
-      border-bottom: 1px solid #999999;
-      box-shadow:
-        0 10px 20px rgba(0, 0, 0, 0.2),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+      background: transparent;
+      border: none;
+      box-shadow: none;
       border-radius: 999px;
       padding: 10px 20px;
       z-index: 9999;
@@ -670,14 +664,47 @@
       transform: translateX(-50%) translateY(0) translateZ(0) !important;
     }
 
+    /* Bottom reveal blur extending to side edges and downwards */
+    .bottom-nav::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      pointer-events: none;
+      z-index: -2;
+      backdrop-filter: blur(120px) saturate(400%) contrast(90%) brightness(1.1);
+      -webkit-backdrop-filter: blur(120px) saturate(400%) contrast(90%) brightness(1.1);
+      background: rgba(255, 255, 255, 0.02);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 70%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 70%);
+    }
+
+    .bottom-nav::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: #101010;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.9);
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.8), 
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.8);
+      border-radius: 999px;
+    }
+
     .nav-item {
       padding: 8px 18px;
       border-radius: 999px;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 0.95rem;
       letter-spacing: 0.1em;
-      color: #333;
-      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+      color: #ffffff;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.3s ease;
@@ -685,16 +712,20 @@
     }
 
     .nav-item:hover {
-      background: linear-gradient(180deg, #e6e6e6 0%, #d4d4d4 100%);
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-      color: #000;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+      color: #ffffff;
     }
 
     .nav-item.active {
-      background: linear-gradient(180deg, #d0d0d0 0%, #e8e8e8 100%);
-      box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(255, 255, 255, 0.5);
-      color: #eb7a14;
-      text-shadow: 0 -1px 1px rgba(255, 255, 255, 0.2);
+      background: linear-gradient(180deg, #fc973f 0%, #eb7a14 100%) !important;
+      color: #ffffff !important;
+      border-radius: 50px !important;
+      box-shadow: 
+        0 4px 10px rgba(235, 122, 20, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     /* ========== DARK MODE TOGGLE BUTTON ========== */
@@ -3284,7 +3315,7 @@
                       <div class="screen" id="tvScreen">
                         <!-- Boomerang loop between tv1.png and tv2.png -->
                         <img src="tv1.png" alt="Surya Vignesh" id="tvImg"
-                          style="animation: tvBoomerang 1.2s steps(1) infinite;">
+                          style="width: 100%; height: 100%; object-fit: cover; animation: tvBoomerang 1.2s steps(1) infinite;">
                         <style>
                           @keyframes tvBoomerang {
                             0% {
@@ -3760,8 +3791,8 @@
       <!-- Col 1: Brand -->
       <div class="footer-col footer-col--brand">
         <h2
-          style="font-family:'Bebas Neue', sans-serif; text-transform:uppercase; font-size: 2.5rem; letter-spacing: 0.1em; line-height: 1.1;">
-          <span style="color: #eb7a14; font-family: 'Bebas Neue', sans-serif;">Surya</span> Vignesh
+          style="font-family:'Bebas Neue', sans-serif; text-transform:uppercase; font-size: 5rem; font-weight: 700; letter-spacing: 0.1em; line-height: 1.1; color: #ffffff; text-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);">
+          SURYA
         </h2>
         <div class="polaroid">
           <div class="photo" style="background:#111;">
@@ -3862,6 +3893,12 @@
         </div>
 
         </div>
+
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; padding-bottom: 20px; color: #888; font-size: 0.95rem; font-family: 'Inter', sans-serif; letter-spacing: 0.02em;">
+      &copy; 2026 <strong>Surya</strong>. All Rights Reserved.
+    </div>
   </footer>
   </div> <!-- Close #portfolioPage -->
 

@@ -725,7 +725,8 @@
 }
 
 .footer-marquee-track {
-    display: inline-flex;
+    display: flex;
+    width: max-content;
     animation: marqueeX 30s linear infinite;
 }
 

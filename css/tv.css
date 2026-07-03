@@ -50,8 +50,8 @@
 .antenna::after {
   content: "";
   position: absolute;
-  margin-top: -9.4em;
-  margin-left: 0.4em;
+  margin-top: 0.5em;
+  margin-left: 3.5em;
   transform: rotate(-25deg);
   width: 1em;
   height: 0.5em;
@@ -88,8 +88,8 @@
 }
 .a1d {
   position: absolute;
-  top: -211%;
-  left: -35%;
+  top: -95%;
+  left: -37%;
   transform: rotate(45deg);
   width: 0.5em;
   height: 0.5em;
@@ -100,7 +100,7 @@
 }
 .a2 {
   position: absolute;
-  top: -210%;
+  top: -76%;
   left: -10%;
   width: 12em;
   height: 4em;
@@ -128,8 +128,8 @@
 }
 .a2d {
   position: absolute;
-  top: -294%;
-  left: 94%;
+  top: -74%;
+  left: 108%;
   width: 0.5em;
   height: 0.5em;
   border-radius: 50%;

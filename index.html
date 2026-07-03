@@ -745,11 +745,9 @@
       bottom: 25px;
       left: 50% !important;
       transform: translateX(-50%) translateY(80px) translateZ(0) !important;
-      background: linear-gradient(180deg, rgba(253, 253, 253, 0.85) 0%, rgba(224, 224, 224, 0.85) 100%);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(179, 179, 179, 0.6);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      background: transparent;
+      border: none;
+      box-shadow: none;
       border-radius: 999px;
       padding: 6px 12px; /* Final reduced padding */
       z-index: 9999;
@@ -797,44 +795,41 @@
     #experience { z-index: 6; }
     #footerSection { z-index: 10; position: relative; }
 
-    /* Full realistic "Liquid Glass" blur extending to side edges and downwards */
+    /* Bottom reveal blur extending to side edges and downwards */
     .bottom-nav::before {
       content: '';
       position: absolute;
-      top: -45px;
-      /* Maximum refraction span */
-      bottom: -15px;
-      /* Reaching the very bottom edge */
+      top: -80px;
+      bottom: -40px;
       left: 50%;
       transform: translateX(-50%);
       width: 100vw;
       pointer-events: none;
       z-index: -2;
-      /* Placed behind the pill */
-      /* Liquid Glass: Maximum intense blur + extreme saturation for realistic light refraction */
-      backdrop-filter: blur(220px) saturate(450%) contrast(85%) brightness(1.1);
-      -webkit-backdrop-filter: blur(220px) saturate(450%) contrast(85%) brightness(1.1);
-      background: transparent;
-      /* Fully transparent base as requested for realism */
-      mask-image: linear-gradient(to bottom, transparent 0%, black 50px);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 50px);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      /* Extremely fine refraction edge */
+      backdrop-filter: blur(120px) saturate(400%) contrast(90%) brightness(1.1);
+      -webkit-backdrop-filter: blur(120px) saturate(400%) contrast(90%) brightness(1.1);
+      background: rgba(255, 255, 255, 0.02);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 70%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 70%);
     }
 
-    /* Addition of actual grain/texture via an overlay for realism */
     .bottom-nav::after {
       content: '';
       position: absolute;
-      inset: -45px -50vw -15px;
-      pointer-events: none;
+      inset: 0;
       z-index: -1;
-      filter: url(#noise);
-      opacity: 0.22;
-      /* Slightly increased grain for tactile realism */
-      mask-image: linear-gradient(to bottom, transparent 0%, black 50px);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 50px);
+      background: #101010;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.9);
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.8), 
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.8);
+      border-radius: 999px;
     }
+
+    /* Removed noise overlay to allow proper layering of black background */
 
     .bottom-nav.visible {
       opacity: 1;
@@ -847,8 +842,7 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 0.95rem;
       letter-spacing: 0.1em;
-      color: #333;
-      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+      color: #ffffff;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.3s ease;
@@ -856,17 +850,20 @@
     }
 
     .nav-item:hover {
-      background: linear-gradient(180deg, #e6e6e6 0%, #d4d4d4 100%);
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-      color: #000;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+      color: #ffffff;
     }
 
     .nav-item.active {
-      background: #000 !important;
-      color: #fff !important;
+      background: linear-gradient(180deg, #fc973f 0%, #eb7a14 100%) !important;
+      color: #ffffff !important;
       border-radius: 50px !important;
-      text-shadow: none;
-      box-shadow: none;
+      box-shadow: 
+        0 4px 10px rgba(235, 122, 20, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     /* ========== DARK MODE TOGGLE BUTTON ========== */
@@ -2563,8 +2560,8 @@
 
     /* ========== FOOTER ========== */
     .footer {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, #fff 100%);
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      background: #050505;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding: 3rem 5%;
       position: relative;
     }
@@ -3533,7 +3530,7 @@
                         <div class="screen" id="tvScreen">
                           <!-- Boomerang loop between tv1.png and tv2.png -->
                           <img src="tv1.png" alt="Surya Vignesh" id="tvImg"
-                            style="animation: tvBoomerang 1.2s steps(1) infinite;">
+                            style="width: 100%; height: 100%; object-fit: cover; animation: tvBoomerang 1.2s steps(1) infinite;">
                           <style>
                             @keyframes tvBoomerang {
                               0% {
@@ -4106,36 +4103,25 @@
             <div>
               <h3
                 style="font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 0.05em; color: #fff; line-height: 1.1; margin: 0;">
-                Full Stack <span style="color: #eb7a14;">AI Developer</span>
+                AI Engineer & <span style="color: #eb7a14;">UI/UX Designer Intern</span>
               </h3>
               <p
                 style="font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 500; color: rgba(255,255,255,0.85); margin-top: 0.5rem;">
-                Orionac</p>
+                Orinac</p>
             </div>
 
             <!-- Date Badge -->
             <div class="shrink-0 flex items-center gap-2 px-4 py-2 rounded-full"
               style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
-              <span class="relative flex h-3 w-3">
-                <span
-                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
               <span
-                style="font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; color: #fff; text-transform: uppercase;">Present</span>
+                style="font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; color: #fff; text-transform: uppercase;">1 Feb 2026 - 31 May 2026</span>
             </div>
           </div>
 
           <!-- Description -->
           <p
             style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.7; color: rgba(255,255,255,0.7); max-width: 900px; margin-bottom: 2rem;">
-            Building scalable full-stack applications integrating AI-driven features using Python and Flask, with a
-            focus on reliability, low-latency responses, and clean service boundaries. Designing and implementing
-            RESTful APIs, optimizing database access patterns, and contributing to system architecture decisions for
-            production-facing workloads. Working on NLP-based functionalities and intelligent automation that streamline
-            internal workflows and reduce manual effort for end users. Collaborating on debugging, testing, and
-            deployment of production-ready solutions in a team environment using Git-based workflows and CI/CD
-            pipelines.
+            AI Engineer & UI/UX Designer Intern with hands-on experience in building AI-powered applications, designing intuitive user interfaces, and developing end-to-end software solutions. Experienced in integrating LLMs, creating responsive UI/UX designs, and collaborating with development teams to deliver impactful digital products.
           </p>
 
           <!-- Tech Stack Tags -->
