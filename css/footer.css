@@ -718,7 +718,7 @@
 .footer-marquee-wrap {
     width: 100%;
     overflow: hidden;
-    background: #fff;
+    background: #ffffff;
     padding: 1rem 0;
     white-space: nowrap;
     display: flex;
@@ -726,7 +726,8 @@
 
 .footer-marquee-track {
     display: flex;
-    width: max-content;
+    flex-shrink: 0;
+    min-width: 100%;
     animation: marqueeX 30s linear infinite;
 }
 
@@ -736,12 +737,12 @@
     font-family: 'Bebas Neue', sans-serif !important;
     letter-spacing: 0.05em;
     margin-right: 2rem;
-    color: #000;
+    color: #000000;
 }
 
 @keyframes marqueeX {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    100% { transform: translateX(-100%); }
 }
 
 .footer-grid-inner {

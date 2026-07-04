@@ -370,22 +370,47 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.5rem;
       letter-spacing: 0.3em;
-      border: 2px solid #000;
+      
+      /* Skeuomorphic tactile design */
+      background: linear-gradient(to bottom, #ffffff 0%, #e6e6e6 100%);
+      border: 1px solid #b3b3b3;
+      border-bottom: 2px solid #8c8c8c;
       border-radius: 50px;
-      background: transparent;
-      color: #000;
+      color: #333;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+      
+      /* Inner highlight and outer drop shadow for 3D physical lift */
+      box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 1),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.05),
+        0 4px 6px rgba(0, 0, 0, 0.15),
+        0 10px 15px rgba(0, 0, 0, 0.1);
+        
       padding: 14px 48px;
       cursor: pointer;
-      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+      transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     #enter-btn:hover {
-      background: #000;
-      color: #fff;
+      background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
+      box-shadow: 
+        inset 0 2px 0 rgba(255, 255, 255, 1),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.05),
+        0 6px 10px rgba(0, 0, 0, 0.2),
+        0 12px 20px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
     }
 
     #enter-btn:active {
-      transform: scale(0.95);
+      background: linear-gradient(to bottom, #d9d9d9 0%, #e6e6e6 100%);
+      border-bottom: 1px solid #8c8c8c;
+      border-top: 2px solid #8c8c8c;
+      /* Pressed in state */
+      box-shadow: 
+        inset 0 4px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 3px rgba(0, 0, 0, 0.1),
+        0 1px 1px rgba(255, 255, 255, 0.5);
+      transform: translateY(2px) scale(0.98);
     }
 
     #spinner {
@@ -772,10 +797,9 @@
       white-space: nowrap;
     }
 
-    /* Radeski-style Sticky Stacking */
+    /* Normal Stack Section (previously sticky) */
     .sticky-stack {
-      position: sticky !important;
-      top: 0;
+      position: relative;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -784,6 +808,10 @@
       border-top: 1px solid rgba(0,0,0,0.05);
       z-index: 1;
       overflow: hidden;
+    }
+    .sticky-footer-trigger {
+      position: sticky !important;
+      top: 0;
     }
 
     /* Vertical stacking order (Z-index layering) */
@@ -797,20 +825,7 @@
 
     /* Bottom reveal blur extending to side edges and downwards */
     .bottom-nav::before {
-      content: '';
-      position: absolute;
-      top: -80px;
-      bottom: -40px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      pointer-events: none;
-      z-index: -2;
-      backdrop-filter: blur(120px) saturate(400%) contrast(90%) brightness(1.1);
-      -webkit-backdrop-filter: blur(120px) saturate(400%) contrast(90%) brightness(1.1);
-      background: rgba(255, 255, 255, 0.02);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 70%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 70%);
+      display: none;
     }
 
     .bottom-nav::after {
@@ -3265,9 +3280,15 @@
       }
     }
 
-    /* Single-page merge CSS for hero */
+    /* Single-page merge CSS for hero side-pull reveal */
+    .hero-massive-overlay, .hero-tagline-small, .hero-right-text, .hero-name, .hero-tagline, .hero-bottom-left, .hero-bottom-right {
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.5s ease, transform 1.5s cubic-bezier(0.77, 0, 0.175, 1) !important;
+    }
+
     .hero-animated {
       opacity: 1 !important;
+      clip-path: inset(0 0% 0 0) !important;
       transform: translateY(0) !important;
     }
 
@@ -3416,7 +3437,7 @@
           </div>
 
           <div class="flex flex-wrap gap-4 mt-12">
-            <a href="resume.pdf" download
+            <a href="Overall resume.pdf" download
               class="px-8 py-4 skeuo-btn-orange rounded-full flex items-center gap-2 font-medium">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
@@ -3438,14 +3459,6 @@
               setTimeout(()=>this.textContent='Copy Email',2000)})">
               Copy Email
             </button>
-            <a href="https://www.linkedin.com/in/chikkala-venkata-surya-vignesh-82690631b" target="_blank"
-              class="px-8 py-4 skeuo-card-light rounded-full text-gray-800 font-medium transition-all duration-300 flex items-center justify-center"
-              style="color: #111;"
-              onmousedown="this.style.boxShadow='inset 4px 4px 8px #d1d1d1, inset -4px -4px 8px #ffffff'; this.style.transform='translateY(3px)';"
-              onmouseup="this.style.boxShadow=''; this.style.transform='translateY(0)';"
-              onmouseleave="this.style.boxShadow=''; this.style.transform='translateY(0)';">
-              LinkedIn
-            </a>
           </div>
 
           <!-- Social Icons (Moved from right side to below action buttons) -->
@@ -3453,11 +3466,11 @@
             <!-- GitHub -->
             <a href="https://github.com/SuryaVignesh06" target="_blank"
               style="display:flex; align-items:center; justify-content:center; width:45px; height:45px; border-radius:50%; background:rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); transition:all 0.3s ease;"
-              onmouseover="this.style.background='rgba(0,0,0,0.1)';this.style.transform='translateY(-5px)';"
-              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';"
+              onmouseover="this.style.background='#24292e';this.style.transform='translateY(-5px)';this.querySelector('svg').style.stroke='#fff';"
+              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';this.querySelector('svg').style.stroke='#111';"
               title="GitHub">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: stroke 0.3s ease;">
                 <path
                   d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
               </svg>
@@ -3465,11 +3478,11 @@
             <!-- LinkedIn -->
             <a href="https://www.linkedin.com/in/chikkala-venkata-surya-vignesh-82690631b/" target="_blank"
               style="display:flex; align-items:center; justify-content:center; width:45px; height:45px; border-radius:50%; background:rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); transition:all 0.3s ease;"
-              onmouseover="this.style.background='rgba(10,102,194,0.1)';this.style.transform='translateY(-5px)';"
-              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';"
+              onmouseover="this.style.background='#0077b5';this.style.transform='translateY(-5px)';this.querySelector('svg').style.stroke='#fff';"
+              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';this.querySelector('svg').style.stroke='#111';"
               title="LinkedIn">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: stroke 0.3s ease;">
                 <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
                 <rect width="4" height="12" x="2" y="9" />
                 <circle cx="4" cy="4" r="2" />
@@ -3478,10 +3491,10 @@
             <!-- Email -->
             <a href="mailto:suryavignesh723rk@gmail.com"
               style="display:flex; align-items:center; justify-content:center; width:45px; height:45px; border-radius:50%; background:rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); transition:all 0.3s ease;"
-              onmouseover="this.style.background='rgba(234,67,53,0.1)';this.style.transform='translateY(-5px)';"
-              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';" title="Email">
+              onmouseover="this.style.background='#ea4335';this.style.transform='translateY(-5px)';this.querySelector('svg').style.stroke='#fff';"
+              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';this.querySelector('svg').style.stroke='#111';" title="Email">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: stroke 0.3s ease;">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
               </svg>
@@ -3489,11 +3502,11 @@
             <!-- Instagram -->
             <a href="https://www.instagram.com/surya_vignesh_06/" target="_blank"
               style="display:flex; align-items:center; justify-content:center; width:45px; height:45px; border-radius:50%; background:rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); transition:all 0.3s ease;"
-              onmouseover="this.style.background='rgba(225,48,108,0.1)';this.style.transform='translateY(-5px)';"
-              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';"
+              onmouseover="this.style.background='#E1306C';this.style.transform='translateY(-5px)';this.querySelector('svg').style.stroke='#fff';"
+              onmouseout="this.style.background='rgba(0,0,0,0.05)';this.style.transform='translateY(0)';this.querySelector('svg').style.stroke='#111';"
               title="Instagram">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: stroke 0.3s ease;">
                 <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                 <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
@@ -3600,99 +3613,32 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="sticky-stack">
-      <!-- Skills Section Heading -->
-      <div class="skills-container text-center mb-16 mx-auto w-full">
-        <p class="text-xs font-bold tracking-[0.4em] text-[#111] mb-4 font-poppins" style="text-transform:uppercase;">/
-          Technologies</p>
-        <h2
-          style="font-family:'Bebas Neue',sans-serif; font-size: clamp(5rem, 12vw, 10rem); line-height:0.88; color: #eb7a14; letter-spacing:0.05em;">
-          Skills</h2>
-      </div>
+    <section id="skills" class="sticky-stack bg-[#111]">
+      <div class="skills-container">
+        <h2 style="font-family:'Bebas Neue',sans-serif; font-size: clamp(5rem, 12vw, 10rem); line-height:0.88; color: #eb7a14; letter-spacing:0.05em; text-align: center; margin-bottom: 10px;">My Skills</h2>
+        <p class="skills-description">Hover to glow, Click to see details</p>
+        
+        <div class="led-board">
+          <div class="logoloop-fade-wrapper">
+            <div class="skills-track" id="skillsTrack">
+            <button class="skill-btn" data-skill="java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" alt="Java" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="uiux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" alt="Figma" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="javascript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="c"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg" alt="C" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="html"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" alt="HTML5" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="css"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="CSS3" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="react"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" class="skill-icon"></button>
 
-      <div class="flex flex-col gap-10">
-        <!-- Pure CSS Zero-Lag Marquee -->
-        <div class="pure-css-marquee">
-          <!-- Mask for fading edges -->
-          <div class="marquee-fade-left"></div>
-          <div class="marquee-fade-right"></div>
-
-          <div class="marquee-track">
-            <!-- Group 1 -->
-            <div class="marquee-group">
-              <i class="devicon-react-original colored" title="React"></i>
-              <i class="devicon-html5-plain colored" title="HTML5"></i>
-              <i class="devicon-css3-plain colored" title="CSS3"></i>
-              <i class="devicon-javascript-plain colored" title="JavaScript"></i>
-              <i class="devicon-typescript-plain colored" title="TypeScript"></i>
-              <i class="devicon-nodejs-plain colored" title="Node.js"></i>
-              <i class="devicon-figma-plain colored" title="Figma"></i>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" class="custom-stack-icon">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                <polyline points="2 17 12 22 22 17"></polyline>
-                <polyline points="2 12 12 17 22 12"></polyline>
-              </svg>
-              <i class="devicon-c-plain colored" title="C"></i>
-              <i class="devicon-python-plain colored" title="Python"></i>
-              <i class="devicon-azuresqldatabase-plain colored" title="SQL"></i>
-              <i class="devicon-git-plain colored" title="Git"></i>
-              <!-- Duplicate inside group to ensure it's wide enough for 4K displays -->
-              <i class="devicon-react-original colored" title="React"></i>
-              <i class="devicon-html5-plain colored" title="HTML5"></i>
-              <i class="devicon-css3-plain colored" title="CSS3"></i>
-              <i class="devicon-javascript-plain colored" title="JavaScript"></i>
-              <i class="devicon-typescript-plain colored" title="TypeScript"></i>
-              <i class="devicon-nodejs-plain colored" title="Node.js"></i>
-              <i class="devicon-figma-plain colored" title="Figma"></i>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" class="custom-stack-icon">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                <polyline points="2 17 12 22 22 17"></polyline>
-                <polyline points="2 12 12 17 22 12"></polyline>
-              </svg>
-              <i class="devicon-c-plain colored" title="C"></i>
-              <i class="devicon-python-plain colored" title="Python"></i>
-              <i class="devicon-azuresqldatabase-plain colored" title="SQL"></i>
-              <i class="devicon-git-plain colored" title="Git"></i>
-            </div>
-            <!-- Group 2 (Exact Duplicate for Seamless Loop) -->
-            <div class="marquee-group" aria-hidden="true">
-              <i class="devicon-react-original colored" title="React"></i>
-              <i class="devicon-html5-plain colored" title="HTML5"></i>
-              <i class="devicon-css3-plain colored" title="CSS3"></i>
-              <i class="devicon-javascript-plain colored" title="JavaScript"></i>
-              <i class="devicon-typescript-plain colored" title="TypeScript"></i>
-              <i class="devicon-nodejs-plain colored" title="Node.js"></i>
-              <i class="devicon-figma-plain colored" title="Figma"></i>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" class="custom-stack-icon">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                <polyline points="2 17 12 22 22 17"></polyline>
-                <polyline points="2 12 12 17 22 12"></polyline>
-              </svg>
-              <i class="devicon-c-plain colored" title="C"></i>
-              <i class="devicon-python-plain colored" title="Python"></i>
-              <i class="devicon-azuresqldatabase-plain colored" title="SQL"></i>
-              <i class="devicon-git-plain colored" title="Git"></i>
-              <!-- Duplicate inside group to ensure it's wide enough for 4K displays -->
-              <i class="devicon-react-original colored" title="React"></i>
-              <i class="devicon-html5-plain colored" title="HTML5"></i>
-              <i class="devicon-css3-plain colored" title="CSS3"></i>
-              <i class="devicon-javascript-plain colored" title="JavaScript"></i>
-              <i class="devicon-typescript-plain colored" title="TypeScript"></i>
-              <i class="devicon-nodejs-plain colored" title="Node.js"></i>
-              <i class="devicon-figma-plain colored" title="Figma"></i>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" class="custom-stack-icon">
-                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                <polyline points="2 17 12 22 22 17"></polyline>
-                <polyline points="2 12 12 17 22 12"></polyline>
-              </svg>
-              <i class="devicon-c-plain colored" title="C"></i>
-              <i class="devicon-python-plain colored" title="Python"></i>
-              <i class="devicon-azuresqldatabase-plain colored" title="SQL"></i>
-              <i class="devicon-git-plain colored" title="Git"></i>
+            <!-- Duplicate for infinite marquee loop -->
+            <button class="skill-btn" data-skill="java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" alt="Java" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="uiux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" alt="Figma" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="javascript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="c"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg" alt="C" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="html"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" alt="HTML5" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="css"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="CSS3" class="skill-icon"></button>
+            <button class="skill-btn" data-skill="react"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" class="skill-icon"></button>
             </div>
           </div>
         </div>
@@ -4149,6 +4095,60 @@
     </div>
   </section>
 
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="sticky-footer-trigger py-24 relative z-10" style="background: #f2f2f2;">
+    <div class="w-full max-w-[1200px] mx-auto px-4">
+      
+      <!-- Section Header -->
+      <div class="mb-12">
+        <div class="flex items-center gap-4 mb-4">
+          <span style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.35em; color: #eb7a14; text-transform: uppercase;">Contact</span>
+          <div class="flex-1 h-[1px] bg-black/10"></div>
+          <span style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.35em; color: rgba(0,0,0,0.35);">Get in touch</span>
+        </div>
+        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: #000; margin: 0;">
+          Let's Work <span style="color: #eb7a14;">Together</span>
+        </h2>
+      </div>
+
+      <!-- Contact Skeuomorphic Form Card -->
+      <div class="relative w-full rounded-2xl overflow-hidden transition-transform duration-500 hover:-translate-y-2 pointer-events-auto"
+        style="background: linear-gradient(145deg, #2b2b2b, #1a1a1a); 
+                  border: 1px solid #333; 
+                  box-shadow: 10px 10px 30px rgba(0,0,0,0.3), inset 1px 1px 2px rgba(255,255,255,0.08);">
+        
+        <div class="p-8 md:p-12 relative z-10">
+          <form onsubmit="event.preventDefault(); alert('Message Sent!'); this.reset();" class="flex flex-col gap-6">
+            
+            <div class="flex flex-col gap-2">
+              <label for="contact-email" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em; color: rgba(255,255,255,0.85); font-size: 1.2rem;">Email Address</label>
+              <input type="email" id="contact-email" required placeholder="your@email.com"
+                style="padding: 1rem 1.5rem; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.3s ease;"
+                onfocus="this.style.borderColor='#eb7a14'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+            </div>
+            
+            <div class="flex flex-col gap-2">
+              <label for="contact-matter" style="font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.1em; color: rgba(255,255,255,0.85); font-size: 1.2rem;">Matter / Message</label>
+              <textarea id="contact-matter" rows="5" required placeholder="What would you like to discuss?"
+                style="padding: 1rem 1.5rem; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: 'Inter', sans-serif; outline: none; resize: vertical; transition: border-color 0.3s ease;"
+                onfocus="this.style.borderColor='#eb7a14'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"></textarea>
+            </div>
+
+            <button type="submit"
+              class="px-8 py-4 mt-4 font-medium transition-all duration-300 rounded-xl"
+              style="background: linear-gradient(to bottom, #eb7a14, #c9650d); color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid #ff9a45; box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), 0 4px 10px rgba(235,122,20,0.3);"
+              onmousedown="this.style.transform='translateY(2px)'; this.style.boxShadow='inset 0 2px 5px rgba(0,0,0,0.3)';"
+              onmouseup="this.style.transform='translateY(0)'; this.style.boxShadow='inset 0 2px 0 rgba(255,255,255,0.3), 0 4px 10px rgba(235,122,20,0.3)';"
+              onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='inset 0 2px 0 rgba(255,255,255,0.3), 0 4px 10px rgba(235,122,20,0.3)';">
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer class="footer-radeski" id="footerSection"
     style="position: relative; overflow: hidden; background: #000; color: #fff;">
@@ -4159,6 +4159,47 @@
 
     <!-- Content wrapper that sits above Aurora -->
     <div style="position: relative; z-index: 10;">
+      
+      <!-- Distressed Grunge Stamp (Top Right) -->
+      <div class="stamp-wrapper" style="position: absolute; top: 180px; right: 15px; width: 140px; height: 140px; z-index: 50; pointer-events: none;">
+        <svg viewBox="0 0 100 100" class="real-stamp" style="width: 100%; height: 100%; overflow: visible; opacity: 0;">
+
+          <!-- Outer Circle (Thin with small gaps, matching inner circle width) -->
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#f4f4f0" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="35 3 12 2 45 4 20 2 15 2 50 4" />
+          
+          <!-- Inner Circle (Thin with small gaps) -->
+          <circle cx="50" cy="50" r="27" fill="none" stroke="#f4f4f0" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="35 2 60 1 15 2 20 1" />
+          
+          <!-- Text on path between circles -->
+          <path id="stampTextPath" d="M 50, 50 m -36.5, 0 a 36.5,36.5 0 1,1 73,0 a 36.5,36.5 0 1,1 -73,0" fill="none" />
+          <text fill="#f4f4f0" font-family="'Courier New', Courier, monospace" font-size="8.8" font-weight="900" letter-spacing="0">
+            <textPath href="#stampTextPath" startOffset="1.5%">
+              all rights reserved by suryavignesh 2026
+            </textPath>
+          </text>
+        </svg>
+        <style>
+          @keyframes slamStamp {
+            0% { transform: scale(8) rotate(-45deg); opacity: 0; }
+            100% { transform: scale(1) rotate(-10deg); opacity: 1; }
+          }
+          .real-stamp {
+            opacity: 0;
+            transform-origin: center;
+          }
+          .real-stamp.animate {
+            animation: slamStamp 0.6s ease-out forwards;
+          }
+          @media (max-width: 768px) {
+            .stamp-wrapper {
+              top: 80px !important;
+              right: 10px !important;
+              width: 100px !important;
+              height: 100px !important;
+            }
+          }
+        </style>
+      </div>
       <!-- Marquee CTA -->
       <div class="footer-marquee-wrap">
         <!-- Doubled spans for perfectly seamless marquee loop -->
@@ -4217,9 +4258,9 @@
               <a href="mailto:suryavignesh723rk@gmail.com" class="block">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="transition: transform 0.2s ease, opacity 0.2s ease;"
-                  onmouseover="this.style.opacity='0.7'; this.style.transform='scale(1.2)'"
-                  onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">
+                  style="transition: transform 0.2s ease, stroke 0.3s ease;"
+                  onmouseover="this.style.transform='scale(1.2)'; this.style.stroke='#ea4335';"
+                  onmouseout="this.style.transform='scale(1)'; this.style.stroke='white';">
                   <rect width="20" height="16" x="2" y="4" rx="2" />
                   <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                 </svg>
@@ -4234,9 +4275,9 @@
                 class="block">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="transition: transform 0.2s ease, opacity 0.2s ease;"
-                  onmouseover="this.style.opacity='0.7'; this.style.transform='scale(1.2)'"
-                  onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">
+                  style="transition: transform 0.2s ease, stroke 0.3s ease;"
+                  onmouseover="this.style.transform='scale(1.2)'; this.style.stroke='#0077b5';"
+                  onmouseout="this.style.transform='scale(1)'; this.style.stroke='white';">
                   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
                   <rect width="4" height="12" x="2" y="9" />
                   <circle cx="4" cy="4" r="2" />
@@ -4251,9 +4292,9 @@
               <a href="https://github.com/SuryaVignesh06" target="_blank" class="block">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="transition: transform 0.2s ease, opacity 0.2s ease;"
-                  onmouseover="this.style.opacity='0.7'; this.style.transform='scale(1.2)'"
-                  onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">
+                  style="transition: transform 0.2s ease, stroke 0.3s ease;"
+                  onmouseover="this.style.transform='scale(1.2)'; this.style.stroke='#a0a0a0';"
+                  onmouseout="this.style.transform='scale(1)'; this.style.stroke='white';">
                   <path
                     d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
                 </svg>
@@ -4267,9 +4308,9 @@
               <a href="https://www.instagram.com/suryavignesh_06/" target="_blank" class="block">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="transition: transform 0.2s ease, opacity 0.2s ease;"
-                  onmouseover="this.style.opacity='0.7'; this.style.transform='scale(1.2)'"
-                  onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">
+                  style="transition: transform 0.2s ease, stroke 0.3s ease;"
+                  onmouseover="this.style.transform='scale(1.2)'; this.style.stroke='#E1306C';"
+                  onmouseout="this.style.transform='scale(1)'; this.style.stroke='white';">
                   <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                   <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
@@ -4718,14 +4759,14 @@
 
     // ========== PORTFOLIO FUNCTIONALITY ========== 
     const skillsData = {
-      programming: { title: 'PROGRAMMING LANGUAGES', level: 'Core Skills', details: ['Python', 'Java', 'C', 'SQL', 'Kotlin'] },
-      web: { title: 'WEB TECHNOLOGIES', level: 'Frontend Architect', details: ['HTML5', 'CSS3', 'JavaScript (ES6+)', 'React.js'] },
-      ai: { title: 'AI / ML TECHNOLOGIES', level: 'Specialization', details: ['Machine Learning', 'Natural Language Processing (NLP)', 'Deep Learning', 'Generative AI', 'Gemini API Integration'] },
-      frameworks: { title: 'FRAMEWORKS & LIBRARIES', level: 'Toolbelt', details: ['Flask', 'SQLAlchemy', 'Pandas', 'NumPy', 'Scikit-learn'] },
-      databases: { title: 'DATABASES', level: 'Data Management', details: ['SQLite', 'SQL', 'SQLAlchemy ORM'] },
-      design: { title: 'UI/UX & DESIGN TOOLS', level: 'Product Design', details: ['Figma', 'WixStudio', 'WixVibe'] },
-      tools: { title: 'DEVELOPER TOOLS', level: 'Workflow', details: ['VS Code', 'Git', 'GitHub', 'Cursor', 'Anti Gravity', 'RESTful APIs'] },
-      concepts: { title: 'CORE CONCEPTS', level: 'Computer Science', details: ['Data Structures', 'Algorithms', 'Object-Oriented Programming (OOP)', 'System Design', 'API Development', 'Data Analytics'] }
+      java: { title: 'JAVA', level: 'Core Skills', details: ['Data Structures', 'OOPs', 'Java Collections', 'Exception Handling'] },
+      python: { title: 'PYTHON', level: 'Expert Level', details: ['Data Analysis', 'Machine Learning', 'Flask', 'Automation'] },
+      uiux: { title: 'UI/UX', level: 'Product Design', details: ['Figma', 'Wireframing', 'Prototyping', 'User Research'] },
+      javascript: { title: 'JAVASCRIPT', level: 'Web Development', details: ['ES6+', 'DOM Manipulation', 'Event Handling', 'Async/Await'] },
+      c: { title: 'C', level: 'Fundamental', details: ['Pointers', 'Memory Management', 'Data Structures'] },
+      html: { title: 'HTML', level: 'Core', details: ['Semantic HTML', 'Accessibility', 'SEO'] },
+      css: { title: 'CSS', level: 'Core', details: ['Flexbox', 'Grid', 'Animations', 'Tailwind CSS'] },
+      react: { title: 'REACT', level: 'Web Framework', details: ['Components', 'Hooks', 'State Management', 'React Router'] }
     };
 
     const portfolioPage = document.getElementById('portfolioPage');
@@ -4858,15 +4899,46 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Skills Track Pause on Hover
-    skillsTrack.addEventListener('mouseenter', () => {
-      skillsTrack.classList.add('paused');
-    });
+    // Smooth JS Marquee Loop for Skills Track (LogoLoop style)
+    let logoLoopRaf;
+    let logoLoopLastTime = null;
+    let logoLoopOffset = 0;
+    let logoLoopVelocity = 80; // default speed px/s
+    let logoLoopTargetVelocity = 80;
+    const LOGO_LOOP_TAU = 0.25;
 
-    skillsTrack.addEventListener('mouseleave', () => {
-      skillsTrack.classList.remove('paused');
-    });
+    let logoLoopSeqWidth = 0;
 
+    const updateLogoLoopDimensions = () => {
+      if (!skillsTrack) return;
+      // The track contains 2 identical sequences. The sequence width is exactly half the total scrollWidth.
+      // We must account for the gap between the two sequences, but scrollWidth includes all children and gaps.
+      logoLoopSeqWidth = skillsTrack.scrollWidth / 2;
+    };
+
+    window.addEventListener('resize', updateLogoLoopDimensions);
+    setTimeout(updateLogoLoopDimensions, 100);
+
+    const animateLogoLoop = (timestamp) => {
+      if (!logoLoopLastTime) logoLoopLastTime = timestamp;
+      const deltaTime = Math.max(0, timestamp - logoLoopLastTime) / 1000;
+      logoLoopLastTime = timestamp;
+
+      // Smooth velocity interpolation (physics based)
+      const easingFactor = 1 - Math.exp(-deltaTime / LOGO_LOOP_TAU);
+      logoLoopVelocity += (logoLoopTargetVelocity - logoLoopVelocity) * easingFactor;
+
+      if (logoLoopSeqWidth > 0) {
+        logoLoopOffset += logoLoopVelocity * deltaTime;
+        logoLoopOffset = ((logoLoopOffset % logoLoopSeqWidth) + logoLoopSeqWidth) % logoLoopSeqWidth;
+        skillsTrack.style.transform = `translate3d(-${logoLoopOffset}px, 0, 0)`;
+      }
+
+      logoLoopRaf = requestAnimationFrame(animateLogoLoop);
+    };
+    logoLoopRaf = requestAnimationFrame(animateLogoLoop);
+
+    // Hover pause removed as requested
     // Skill Button Click - Open Popup
     skillBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -5314,6 +5386,24 @@
     }
   </script>
 
+  <!-- Stamp Animation Logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const stamp = document.querySelector('.real-stamp');
+      if (stamp) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              stamp.classList.add('animate');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.3 });
+        observer.observe(document.querySelector('#footerSection'));
+      }
+    });
+  </script>
+
   <!-- Dark Mode Toggle Logic -->
 
 
@@ -5372,54 +5462,218 @@
     .projects-scroll-wrapper {
       scroll-behavior: smooth;
     }
-  </style>
 
-
-  <!-- ===== WORKS TRANSITION OVERLAY ===== -->
-  <div id="worksOverlay" style="
-    position: fixed; inset: 0; z-index: 99999;
-    background: #000;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.6s ease;
-  ">
-    <h1 id="worksOverlayText" style="
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.5rem, 8vw, 6rem);
-      color: #fff;
-      letter-spacing: 0.02em;
-      margin: 0;
-    "></h1>
-  </div>
-
-  <script>
-    function startWorksTransition(e) {
-      e.preventDefault();
-      const overlay = document.getElementById('worksOverlay');
-      const textEl = document.getElementById('worksOverlayText');
-      const message = 'welcome to my world 👀';
-
-      // 1. Fade overlay in
-      overlay.style.opacity = '1';
-      overlay.style.pointerEvents = 'all';
-
-      // 2. Typewriter
-      let i = 0;
-      textEl.textContent = '';
-      const type = () => {
-        if (i <= message.length) {
-          textEl.textContent = message.slice(0, i++);
-          setTimeout(type, 60);
-        } else {
-          // 3. Navigate immediately after typing
-          window.location.href = 'projects.html';
-        }
-      };
-      type();
+    /* ==========================================================================
+       LED Board Skills Section
+       ========================================================================== */
+    .skills-container {
+      width: 100%;
+      max-width: 1400px;
+      text-align: center;
+      margin: 0 auto;
     }
-  </script>
 
-  <style>
+    .skills-description {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+    }
+
+    .led-board {
+      width: 100%;
+      padding: 3rem 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .logoloop-fade-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .logoloop-fade-wrapper::before,
+    .logoloop-fade-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: clamp(40px, 10%, 150px);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .logoloop-fade-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, #000000 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    .logoloop-fade-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, #000000 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    .skills-track {
+      display: flex;
+      gap: 3rem;
+      width: max-content;
+      will-change: transform;
+    }
+
+    .skill-btn {
+      background-color: transparent;
+      cursor: pointer;
+      margin: 0;
+      padding: 1.5rem 3rem;
+      border: none;
+      position: relative;
+      transition: all 0.4s ease;
+      white-space: nowrap;
+      min-width: fit-content;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .skill-icon {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      transition: all 0.4s ease;
+    }
+
+    .skill-btn:hover .skill-icon {
+      transform: scale(1.1);
+    }
+
+    .skill-btn:hover {
+      transform: scale(1.08) translateY(-5px);
+      z-index: 10;
+    }
+    
+    /* Skill Popup Modal */
+    .skill-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 90%;
+      max-width: 500px;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      padding: 3rem 2.5rem;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 80px rgba(255, 255, 255, 0.2);
+    }
+
+    .skill-popup.active {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .popup-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .popup-title {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .popup-level {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin-bottom: 2rem;
+      letter-spacing: 0.15em;
+    }
+
+    .popup-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .popup-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.9);
+      transition: all 0.3s ease;
+    }
+
+    .popup-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(10px);
+    }
+
+    .popup-item::before {
+      content: '▸';
+      margin-right: 1rem;
+      color: #fff;
+      font-size: 1.3rem;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .popup-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+
+    /* ==========================================================================
+       Projects & 3D Cards
+       ========================================================================== */
+
     .custom-animated-btn {
       position: relative;
       padding: 18px 50px;
@@ -5541,7 +5795,6 @@
         transform: rotate(0deg);
       }
     }
-
     /* =========================================
        GLOBAL SKEUOMORPHIC UI CLASSES
        ========================================= */
@@ -5677,6 +5930,49 @@
         lenis.raf(time * 1000);
       });
       gsap.ticker.lagSmoothing(0);
+    }
+  </script>
+  <!-- ===== WORKS TRANSITION OVERLAY ===== -->
+  <div id="worksOverlay" style="
+    position: fixed; inset: 0; z-index: 99999;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.6s ease;
+  ">
+    <h1 id="worksOverlayText" style="
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 6rem);
+      color: #fff;
+      letter-spacing: 0.02em;
+      margin: 0;
+    "></h1>
+  </div>
+
+  <script>
+    function startWorksTransition(e) {
+      e.preventDefault();
+      const overlay = document.getElementById('worksOverlay');
+      const textEl = document.getElementById('worksOverlayText');
+      const message = 'welcome to my world 👀';
+
+      // 1. Fade overlay in
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'all';
+
+      // 2. Typewriter
+      let i = 0;
+      textEl.textContent = '';
+      const type = () => {
+        if (i <= message.length) {
+          textEl.textContent = message.slice(0, i++);
+          setTimeout(type, 60);
+        } else {
+          // 3. Navigate immediately after typing
+          window.location.href = 'projects.html';
+        }
+      };
+      type();
     }
   </script>
 </body>

@@ -179,7 +179,6 @@ class ParticleSystem3D {
       this.heroDims = { w: drawW, h: drawH };
 
       // ── Build WebGL geometry ──
-      // Step heavily reduced to generate drastically MORE particles as requested
       const step = window.innerWidth < 768 ? 4 : 3;
 
       const positions      = [];
@@ -195,9 +194,9 @@ class ParticleSystem3D {
       // The hero-orbit-center is position:absolute bottom:0 left:50%, so the image
       // bottom edge aligns with the hero section bottom (= 100vh bottom).
       // heroPortrait sits at: centerX = 50vw, bottom = 100vh => top = 100vh - drawH
-
-      const heroLeft   = (window.innerWidth  - drawW) / 2;  // px from left
-      const heroTop    = window.innerHeight  - drawH;        // px from top (bottom-anchored)
+      // We use document.documentElement.clientWidth to avoid scrollbar width issues
+      let heroLeft   = (document.documentElement.clientWidth  - drawW) / 2;
+      let heroTop    = window.innerHeight  - drawH;
 
       // WebGL origin is viewport center, Y flipped
       const wglOriginX = window.innerWidth  / 2;
@@ -216,18 +215,25 @@ class ParticleSystem3D {
           const tX =  (heroLeft + x) - wglOriginX;
           const tY = -(heroTop  + y) + wglOriginY;
 
-          // Start: random atmospheric sphere
-          const rho   = 1500 + Math.random() * 2000;
-          const theta = Math.random() * Math.PI * 2;
-          const phi   = Math.acos(Math.random() * 2 - 1);
-          const sX = rho * Math.sin(phi) * Math.cos(theta);
-          const sY = rho * Math.sin(phi) * Math.sin(theta);
-          const sZ = rho * Math.cos(phi);
+          // Start: scattered in a massive, realistic deep 3D volume
+          // X and Y span far beyond the edges of the screen
+          const sX = (Math.random() - 0.5) * window.innerWidth * 4.0;
+          const sY = (Math.random() - 0.5) * window.innerHeight * 4.0;
+          
+          // Z spans from deep behind the screen to right in front of the camera lens!
+          const sZ = (Math.random() - 0.5) * 4000.0; 
 
           positions.push(sX, sY, sZ);
           targetPositions.push(tX, tY, 0);
           colors.push(r, g, b);
-          sizes.push(1.0 + Math.random() * 3.0); // Random size from 1.0 to 4.0
+          
+          // Mix of sizes: some minute dust, some medium shapes, some large symbols
+          const rand = Math.random();
+          let sz = 6.0 + Math.random() * 4.0; // small dust/pixels
+          if (rand > 0.6) sz = 12.0 + Math.random() * 8.0; // medium shapes
+          if (rand > 0.85) sz = 24.0 + Math.random() * 10.0; // large symbols/shapes
+          if (rand > 0.95) sz = 40.0 + Math.random() * 15.0; // very large distinct particles
+          sizes.push(sz);
         }
       }
 
@@ -237,21 +243,54 @@ class ParticleSystem3D {
       this.geometry.setAttribute('color',          new THREE.Float32BufferAttribute(colors,          3));
       this.geometry.setAttribute('size',           new THREE.Float32BufferAttribute(sizes,           1));
 
+      // ── Generate Code Symbols Texture Atlas ──
+      const atlasSize = 512;
+      const cols = 6;
+      const cellSize = atlasSize / cols;
+      const symbolCanvas = document.createElement('canvas');
+      symbolCanvas.width = atlasSize;
+      symbolCanvas.height = atlasSize;
+      const ctx = symbolCanvas.getContext('2d');
+      
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, atlasSize, atlasSize);
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = `bold ${cellSize * 0.7}px monospace`;
+      
+      const symbols = [
+        '{','}','<','>','/','*',';','(',')','#','=','+','-','[',']','&',
+        '!','|',':','.','?',',','~','%','^','$','@','_','"','0','1','A','X','Y','Z','W','Q'
+      ];
+      for (let i = 0; i < 36; i++) {
+        const cx = (i % cols) * cellSize + cellSize / 2;
+        const cy = Math.floor(i / cols) * cellSize + cellSize / 2;
+        ctx.fillText(symbols[i], cx, cy);
+      }
+      
+      const symbolTexture = new THREE.CanvasTexture(symbolCanvas);
+      symbolTexture.minFilter = THREE.LinearMipmapLinearFilter;
+      symbolTexture.magFilter = THREE.LinearFilter;
+
       // ── Custom Shader ──
       this.material = new THREE.ShaderMaterial({
         uniforms: {
           uProgress:  { value: 0.0 },
           uTime:      { value: 0.0 },
           uPointSize: { value: window.innerWidth < 768 ? 4.0 : 2.0 },
-          uStepSize:  { value: step + 1.5 }, // Exact gapless size matching algorithm step
+          uStepSize:  { value: step + 1.5 },
           uFlash:     { value: 0.0 },
           uOpacity:   { value: 0.0 },
+          uTexture:   { value: symbolTexture },
         },
         vertexShader: `
           attribute vec3 targetPosition;
           attribute vec3 color;
           attribute float size;
           varying vec3 vColor;
+          varying float vProgress;
           uniform float uProgress;
           uniform float uTime;
           uniform float uPointSize;
@@ -260,42 +299,110 @@ class ParticleSystem3D {
 
           void main() {
             vColor = color;
-            // Gentle float during idle
-            vec3 wobble = vec3(
-              sin(position.y * 0.04 + uTime) * 8.0,
-              cos(position.x * 0.04 + uTime) * 8.0,
-              sin(position.z * 0.04 + uTime) * 8.0
-            ) * (1.0 - uProgress);
+            
+            // Simple ease-in-out for convergence (no wave delay, so they all pull in from all 360-degree directions)
+            float easedProgress = uProgress * uProgress * (3.0 - 2.0 * uProgress);
+            vProgress = easedProgress;
 
-            vec3 pos = mix(position + wobble, targetPosition, uProgress);
+            // Slow, gentle organic dust drift during idle phase
+            // Uses the particle's unique random position as a seed to create highly varied, sweeping paths
+            vec3 drift = vec3(
+              sin(position.y * 0.005 + uTime * 0.05) * 250.0,
+              cos(position.z * 0.005 + uTime * 0.04) * 250.0,
+              sin(position.x * 0.005 + uTime * 0.06) * 250.0
+            );
+
+            // Mix from the wild drifting space dust into the locked target position
+            vec3 startPos = position + drift;
+            vec3 pos = mix(startPos, targetPosition, easedProgress);
+            
             vec4 mv  = modelViewMatrix * vec4(pos, 1.0);
             gl_Position  = projectionMatrix * mv;
             
-            // Particles shrink/expand seamlessly into a fully solid gapless layout
-            float finalSize = mix(size, uStepSize, uProgress);
+            // Particles seamlessly resize into the final gapless image. 
+            // We multiply uStepSize by 1.6 so the soft circular gradients overlap perfectly without gaps.
+            float finalSize = mix(size, uStepSize * 1.6, easedProgress);
             gl_PointSize = finalSize * (800.0 / -mv.z);
           }
         `,
         fragmentShader: `
           varying vec3 vColor;
-          uniform float uFlash;
+          varying float vProgress;
           uniform float uOpacity;
+          uniform sampler2D uTexture;
 
           void main() {
             vec2 xy = gl_PointCoord.xy - 0.5;
-            if (length(xy) > 0.5) discard;
+            float seed = vColor.r * 12.3 + vColor.g * 45.6 + vColor.b * 78.9;
+            float particleType = fract(seed * 9.876);
+            
+            float particleAlpha = 0.0;
+            
+            if (particleType < 0.95) {
+              // --- 95% are Coding Symbols ---
+              float symbolIndex = floor(fract(seed * 13.37) * 36.0);
+              float cols = 6.0;
+              float col = mod(symbolIndex, cols);
+              float row = floor(symbolIndex / cols);
+              
+              vec2 spriteUv = vec2(
+                (gl_PointCoord.x + col) / cols,
+                (gl_PointCoord.y + row) / cols
+              );
+              particleAlpha = texture2D(uTexture, spriteUv).r;
+            } else {
+              // --- 5% are Geometrical Shapes ---
+              float shapeType = fract(seed * 7.123);
+              float angle = fract(seed * 11.45) * 6.28318;
+              float c = cos(angle);
+              float s = sin(angle);
+              vec2 rotXy = vec2(xy.x * c - xy.y * s, xy.x * s + xy.y * c);
+              
+              float d = 0.0;
+              float bound = 0.25;
+              
+              if (shapeType < 0.33) {
+                // Circle
+                d = length(rotXy);
+                bound = 0.35;
+              } else if (shapeType < 0.66) {
+                // Square
+                d = max(abs(rotXy.x), abs(rotXy.y));
+                bound = 0.35;
+              } else {
+                // Diamond / Rhombus
+                d = abs(rotXy.x) + abs(rotXy.y);
+                bound = 0.4;
+              }
+              // Crisp edges for shapes
+              particleAlpha = smoothstep(bound + 0.02, bound - 0.02, d);
+            }
+            
+            // As they settle, morph everything perfectly into a solid circular pixel to reconstruct the image
+            float r = length(xy);
+            float circleAlpha = smoothstep(0.5, 0.45, r);
+            
+            float finalAlpha = mix(particleAlpha, circleAlpha, pow(vProgress, 4.0));
+            
+            if (finalAlpha < 0.01 && vProgress < 0.99) discard;
 
-            vec3 grey  = vec3(dot(vColor, vec3(0.299, 0.587, 0.114)));
-            vec3 vivid = mix(grey, vColor, 1.0 + uFlash * 2.0);
-            vivid += uFlash * 0.6;
+            // Start as black (or very dark)
+            vec3 rockColor = vec3(0.02);
+            
+            // Return to actual photo color at the very end
+            vec3 finalColor = mix(rockColor, vColor, pow(vProgress, 4.0));
 
-            gl_FragColor = vec4(clamp(vivid, 0.0, 1.0), uOpacity);
+            gl_FragColor = vec4(clamp(finalColor, 0.0, 1.0), uOpacity * finalAlpha);
           }
         `,
         transparent: true,
         depthTest: false,
-        blending: THREE.NormalBlending,
+        blending: THREE.AdditiveBlending, // Ash looks better with additive blending initially, but Normal is safer for the final image. Let's use NormalBlending but the ash is bright.
       });
+
+      // Override blending to NormalBlending
+      this.material.blending = THREE.NormalBlending;
+
 
       this.particles = new THREE.Points(this.geometry, this.material);
       this.scene.add(this.particles);
@@ -349,36 +456,6 @@ class ParticleSystem3D {
 
     document.getElementById('enter-btn').style.display = 'none';
 
-    // Flash
-    gsap.to(this.material.uniforms.uFlash, {
-      value: 1.0, duration: 1.0, delay: 1.8, ease: 'power2.in',
-      onUpdate: () => {
-        if (this.material.uniforms.uFlash.value > 0.8 && this.material.blending !== THREE.AdditiveBlending) {
-          this.material.blending = THREE.AdditiveBlending;
-          this.material.needsUpdate = true;
-        }
-      },
-      onComplete: () => {
-        gsap.to(this.material.uniforms.uFlash, {
-          value: 0.0, duration: 0.4, ease: 'power2.out',
-          onUpdate: () => {
-            if (this.material.uniforms.uFlash.value < 0.2 && this.material.blending !== THREE.NormalBlending) {
-              this.material.blending = THREE.NormalBlending;
-              this.material.needsUpdate = true;
-            }
-          }
-        });
-      }
-    });
-
-    // CSS flash overlay
-    setTimeout(() => {
-      const fl = document.createElement('div');
-      fl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:white;mix-blend-mode:screen;pointer-events:none;z-index:10;';
-      this.container.appendChild(fl);
-      gsap.fromTo(fl, { opacity: 0.8 }, { opacity: 0, duration: 0.5, ease: 'power2.out', onComplete: () => fl.remove() });
-    }, 2800);
-
     // Converge particles
     gsap.to(this.material.uniforms.uProgress, {
       value: 1.0, duration: 3.5, ease: 'power3.inOut',
@@ -428,27 +505,27 @@ class ParticleSystem3D {
       portfolioPage.classList.add('visible');
     }
 
-    // 3. Cross-fade: fade out the WebGL canvas, fade in the real DOM hero image
-    //    They overlap perfectly because:
-    //    - Canvas particle targets computed from DOM image position
-    //    - Camera zoomed to pixelZ so 1 WebGL unit = 1 CSS pixel
-    //    - Both transitions happen at same time (0.5s)
+    // 3. Perfect DOM Hand-off with Side Pull: 
+    //    We leave the canvas fully solid (opacity: 1)
+    //    We wipe the DOM image IN directly on top of it using a clip-path side pull.
     if (heroImgWrap) {
       heroImgWrap.style.transition = 'none';
       heroImgWrap.style.opacity = '0';
+      heroImgWrap.style.clipPath = 'inset(0 100% 0 0)';
+      
+      gsap.to(heroImgWrap, { 
+        clipPath: 'inset(0 0% 0 0)', 
+        opacity: 1, 
+        duration: 1.5, 
+        ease: 'power3.inOut' 
+      });
     }
 
-    // Fade particles out + hero image in simultaneously
-    gsap.to(this.material.uniforms.uOpacity, { value: 0, duration: 0.5, ease: 'power1.inOut' });
-    if (heroImgWrap) {
-      gsap.to(heroImgWrap, { opacity: 1, duration: 0.5, ease: 'power1.inOut' });
-    }
-
-    // 4. After hero image visible → fade out particle container entirely, animate hero text
+    // 4. After DOM hero image is fully visible and overlapping the canvas perfectly, THEN remove canvas
     setTimeout(() => {
       // Fade out and remove particle canvas
       gsap.to(this.container, {
-        opacity: 0, duration: 0.4, ease: 'power2.inOut',
+        opacity: 0, duration: 0.5, ease: 'power2.inOut',
         onComplete: () => {
           this.container.style.display = 'none';
           if (this.renderer) this.renderer.dispose();
