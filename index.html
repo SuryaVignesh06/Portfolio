@@ -3659,8 +3659,8 @@
             <span class="font-bebas text-sm tracking-[0.35em] text-black/40 uppercase">10 Certificates</span>
           </div>
           <h2 class="font-bebas text-black tracking-widest leading-none mb-3"
-            style="text-shadow: 0px 4px 20px rgba(255,255,255,1); font-size: clamp(2.5rem, 6vw, 4.5rem);">
-            <span style="color: #eb7a14; font-family: 'Bebas Neue', sans-serif !important;">Professional</span>
+            style="text-shadow: 0px 4px 20px rgba(255,255,255,1); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: bold;">
+            <span style="color: #eb7a14; font-family: 'Bebas Neue', sans-serif !important; font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">Professional</span>
             Credentials
           </h2>
           <p class="font-inter text-sm md:text-base text-black/80 tracking-widest uppercase mb-6 font-bold">
@@ -3754,7 +3754,7 @@
             { href: "Ai for research and insight.pdf", title: "AI for Research & Insight", sub: "Professional Certificate" },
             { href: "#", title: "Java Programming", sub: "Professional Certificate" },
             { href: "#", title: "Full Stack Development", sub: "Professional Certificate" },
-            { href: "#", title: "Generative AI", sub: "will be Uploaded Soon" },
+            { href: "Genrative ai.pdf", title: "Generative AI", sub: "Prompt Engineering & LLMs" },
             { href: "#", title: "Agentic AI", sub: "will be Uploaded Soon" }
           ];
 
@@ -3782,6 +3782,13 @@
                   <p class="font-inter text-xs text-black/50 tracking-[0.1em] uppercase font-semibold">${c.sub}</p>
                 </a>
               `;
+                if (c.href && c.href !== '#') {
+                  item.onclick = (e) => {
+                    if (!e.target.closest('a')) {
+                      window.open(c.href, '_blank');
+                    }
+                  };
+                }
               } else {
                 item.className = "row__item pointer-events-none rounded-2xl shadow-xl shadow-black/5 overflow-hidden";
                 item.innerHTML = `
@@ -4031,8 +4038,8 @@
             Role</span>
         </div>
         <h2
-          style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: #000; margin: 0;">
-          Professional <span style="color: #eb7a14;">Experience</span>
+          style="font-family: 'Bebas Neue', sans-serif; font-weight: bold; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: #000; margin: 0;">
+          Professional <span style="color: #eb7a14; font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">Experience</span>
         </h2>
       </div>
 
@@ -4048,8 +4055,8 @@
           <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
             <div>
               <h3
-                style="font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 0.05em; color: #fff; line-height: 1.1; margin: 0;">
-                AI Engineer & <span style="color: #eb7a14;">UI/UX Designer Intern</span>
+                style="font-family: 'Bebas Neue', sans-serif; font-weight: bold; font-size: 2.8rem; letter-spacing: 0.05em; color: #fff; line-height: 1.1; margin: 0;">
+                AI Engineer & <span style="color: #eb7a14; font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">UI/UX Designer Intern</span>
               </h3>
               <p
                 style="font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 500; color: rgba(255,255,255,0.85); margin-top: 0.5rem;">
@@ -4106,8 +4113,8 @@
           <div class="flex-1 h-[1px] bg-black/10"></div>
           <span style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.35em; color: rgba(0,0,0,0.35);">Get in touch</span>
         </div>
-        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: #000; margin: 0;">
-          Let's Work <span style="color: #eb7a14;">Together</span>
+        <h2 style="font-family: 'Bebas Neue', sans-serif; font-weight: bold; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: #000; margin: 0;">
+          Let's Work <span style="color: #eb7a14; font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">Together</span>
         </h2>
       </div>
 
@@ -4244,7 +4251,7 @@
             <a href="home.html#about">About</a>
             <a href="home.html#skills">Skills</a>
             <a href="projects.html">Work Samples</a>
-            <a href="certification.html">Certifications</a>
+            <a href="certifications.html">Certifications</a>
           </nav>
         </div>
 
