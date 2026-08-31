@@ -42,12 +42,198 @@
 
     h6,
     .font-oswald,
-    .font-bebas,
-    .section-title {
+    .font-bebas {
       font-family: 'Bebas Neue', sans-serif !important;
       font-weight: 400;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+    }
+
+    /* ===== CANONICAL SECTION HEADING SYSTEM =====
+       Single source of truth for every section header: eyebrow row, title,
+       accent word and sub-line. Bebas Neue ships one weight (400), so the
+       "bold" look is a synthetic weight paired with a hairline stroke on the
+       accent — both live here so no heading can drift out of step again. */
+    .section-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-eyebrow__label,
+    .section-eyebrow__meta {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .section-eyebrow__label {
+      color: #eb7a14;
+    }
+
+    .section-eyebrow__meta {
+      color: rgba(0, 0, 0, 0.35);
+    }
+
+    .section-eyebrow__rule {
+      flex: 1;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Centred variant — the rule stays a short tick instead of stretching */
+    .section-eyebrow--center {
+      justify-content: center;
+    }
+
+    .section-eyebrow--center .section-eyebrow__rule {
+      flex: 0 0 3rem;
+    }
+
+    /* Dark-background variant (Skills) */
+    .section-eyebrow--on-dark .section-eyebrow__meta {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .section-eyebrow--on-dark .section-eyebrow__rule {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .section-heading {
+      font-family: 'Bebas Neue', sans-serif !important;
+      font-weight: bold;
+      font-size: clamp(3rem, 6vw, 5rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #111;
+      margin: 0 0 1rem;
+    }
+
+    /* Major section openers (About / Skills / Work Samples) */
+    .section-heading--lg {
+      font-size: clamp(3.5rem, 8vw, 7.5rem);
+    }
+
+    .section-heading--on-dark {
+      color: #fff;
+    }
+
+    .section-heading .accent {
+      color: #eb7a14;
+      font-family: 'Bebas Neue', sans-serif !important;
+      font-weight: bold;
+      -webkit-text-stroke: 0.4px #eb7a14;
+    }
+
+    .section-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, 0.45);
+      margin: 0;
+    }
+
+    .section-sub--on-dark {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* ===== CONTACT COMPOSITION =====
+       "Let's Work Together" card on the left, character standing to the right
+       and overlapping the card's edge so the two read as one composition
+       rather than two stacked elements. The character is decorative: if its
+       asset is missing the column removes itself and the card goes full width. */
+    .contact-composition {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: end;
+      gap: 0;
+    }
+
+    .contact-composition__card {
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-character {
+      position: relative;
+      z-index: 2;
+      /* Pulls the figure over the card's right edge — this overlap is what
+         sells the "leaning on the card" read. */
+      margin-left: -7%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .contact-character__media {
+      display: block;
+      width: 100%;
+      max-height: clamp(360px, 44vw, 560px);
+      object-fit: contain;
+      object-position: bottom center;
+      transform-origin: 50% 100%;
+      animation: characterBreathe 5.5s ease-in-out infinite;
+    }
+
+    /* Soft contact shadow grounding the figure */
+    .contact-character__shadow {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 58%;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center,
+        rgba(0, 0, 0, 0.22) 0%,
+        rgba(0, 0, 0, 0.10) 45%,
+        transparent 72%);
+      filter: blur(3px);
+      animation: characterShadowBreathe 5.5s ease-in-out infinite;
+    }
+
+    @keyframes characterBreathe {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-6px) scale(1.006); }
+    }
+
+    @keyframes characterShadowBreathe {
+      0%, 100% { opacity: 1; transform: translateX(-50%) scaleX(1); }
+      50%      { opacity: 0.82; transform: translateX(-50%) scaleX(0.95); }
+    }
+
+    /* Asset not present yet — collapse back to the single-column card */
+    .contact-composition.no-character {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .contact-composition.no-character .contact-character {
+      display: none;
+    }
+
+    /* The lean only works side-by-side, so drop the figure once it stacks */
+    @media (max-width: 900px) {
+      .contact-composition {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .contact-character {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .contact-character__media,
+      .contact-character__shadow {
+        animation: none;
+      }
     }
 
     .font-oswald,
@@ -275,25 +461,27 @@
     .footer-col h2,
     .footer-col h5,
     .project-card-v2__number,
-    .project-name,
-    .section-title {
+    .project-name {
       font-family: 'Bebas Neue', sans-serif !important;
       letter-spacing: 0.05em;
     }
 
-    /* Headers: Bebas Neue strictly enforced */
+    /* Headers: Bebas Neue strictly enforced.
+       font-weight is deliberately NOT !important — that was silently forcing
+       every heading back to 400 and beating even inline styles, so headings
+       could never be given a heavier weight. Plain 400 keeps the same default
+       while letting .section-heading override it normally. */
     h1,
     h2,
     h3,
     h4,
     h5,
     h6,
-    .section-title,
     .project-name,
     .footer-name,
     .popup-title {
       font-family: 'Bebas Neue', sans-serif !important;
-      font-weight: 400 !important;
+      font-weight: 400;
       text-transform: uppercase;
     }
 
@@ -742,7 +930,6 @@
     }
 
     /* Global Typography Updates */
-    .section-title,
     .project-name,
     .footer-name,
     .popup-title {
@@ -1275,16 +1462,16 @@
 
     .hero-right-text {
       position: absolute;
-      bottom: 80px; /* Anchored to bottom-left area */
-      left: 2%; /* Moved further left as requested */
+      bottom: 5vh; /* Strict bottom */
+      left: 50%; /* Center of container */
+      margin-left: calc(-50vw + 40px); /* 40px from viewport left edge */
       transform: translateY(40px); /* Pre-animation position */
       z-index: 100 !important;
-      max-width: 400px; /* Adjusted to force 3-line wrapping for the intro text */
-      text-align: left; /* Changed from center as requested */
-      font-size: 0.85rem;
-      line-height: 1.7;
-      color: #000;
-      text-shadow: none; /* No shadow needed on plain background */
+      max-width: 440px;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: #000000;
       letter-spacing: 0.02em;
       opacity: 0;
       transition: opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1), transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
@@ -1298,6 +1485,7 @@
     @media (max-width: 768px) {
       .hero-right-text {
         left: 3%;
+        margin-left: 0;
         bottom: 45px;
         max-width: 85%;
         font-size: 0.78rem;
@@ -1378,6 +1566,382 @@
       opacity: 0;
       transform: translateY(30px);
       transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    /* ===== DESKTOP PRESERVATION (>= 769px) ===== */
+    @media (min-width: 769px) {
+      .mobile-hero-container,
+      .mobile-header-bar,
+      .mobile-nav-drawer {
+        display: none !important;
+      }
+    }
+
+    /* ===== MOBILE HERO REDESIGN SYSTEM (<= 768px) ===== */
+    .mobile-hero-container {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .bottom-nav {
+        display: none !important; /* Navigation features moved to 3-lines menu */
+      }
+
+      .hero {
+        min-height: 100vh;
+        height: auto !important;
+        background: #F7F5F0 !important;
+        position: relative;
+        overflow-x: hidden;
+        padding: 0 !important;
+        display: block !important;
+      }
+
+      .hero-massive-overlay,
+      .hero-right-text,
+      .hero-bottom-right,
+      .hero-bottom-left {
+        display: none !important;
+      }
+
+      .hero-container {
+        display: flex !important;
+        position: absolute !important;
+        bottom: 0;
+        left: 0;
+        z-index: 10;
+        width: 100%;
+        height: auto !important;
+        justify-content: center;
+        align-items: flex-end;
+        margin-top: 0;
+      }
+
+      .hero-orbit-center {
+        position: relative !important;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+      }
+
+      .hero-image {
+        opacity: 1 !important;
+        display: flex !important;
+        justify-content: center;
+        align-items: flex-end;
+      }
+
+      .hero-image img {
+        max-height: 58vh !important;
+        max-width: 98vw !important;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+        opacity: 1 !important;
+        transform: none !important;
+        mix-blend-mode: multiply;
+        background: transparent !important;
+      }
+
+      .mobile-hero-container {
+        display: flex !important;
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 1.25rem 1.25rem 0 1.25rem;
+        position: relative;
+        z-index: 10;
+        margin: 0 auto;
+      }
+
+      .mobile-header-bar {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 0.75rem;
+        z-index: 1000;
+      }
+
+      .mobile-logo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.02em;
+      }
+
+      .mobile-logo-s {
+        color: #111;
+      }
+
+      .mobile-logo-v {
+        color: #D97736;
+      }
+
+      .mobile-menu-btn {
+        background: transparent;
+        border: none;
+        color: #111;
+        padding: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Mobile Navigation Menu Card (Hovering Floating Popover Overlay) */
+      .mobile-nav-drawer {
+        display: none;
+        position: fixed !important;
+        top: 70px !important;
+        left: 1.25rem !important;
+        right: 1.25rem !important;
+        width: calc(100% - 2.5rem) !important;
+        flex-direction: column;
+        gap: 0.4rem;
+        background: rgba(18, 18, 18, 0.96) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 18px !important;
+        padding: 1rem 1.25rem !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+        z-index: 99999 !important;
+        pointer-events: auto;
+      }
+
+      .mobile-nav-drawer.open {
+        display: flex !important;
+        animation: popHover 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .mobile-nav-drawer a {
+        font-family: 'Bebas Neue', sans-serif !important;
+        font-size: 1.35rem;
+        letter-spacing: 0.08em;
+        color: #FFFFFF;
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+
+      .mobile-nav-drawer a:hover,
+      .mobile-nav-drawer a:active {
+        background: rgba(217, 119, 54, 0.25);
+        color: #D97736;
+      }
+
+      @keyframes popHover {
+        from {
+          opacity: 0;
+          transform: translateY(-10px) scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .mobile-hero-title {
+        margin-top: 0.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+
+      .mobile-name-surya {
+        font-family: 'Bebas Neue', sans-serif !important;
+        font-size: clamp(3.2rem, 15vw, 4.8rem);
+        line-height: 0.9;
+        color: #111111;
+        letter-spacing: 0.03em;
+        margin: 0;
+        font-weight: bold;
+        text-align: left;
+      }
+
+      .mobile-name-vignesh {
+        font-family: 'Bebas Neue', sans-serif !important;
+        font-size: clamp(3.2rem, 15vw, 4.8rem);
+        line-height: 0.9;
+        color: #D97736;
+        letter-spacing: 0.03em;
+        margin: 0;
+        font-weight: bold;
+        text-align: left;
+      }
+
+      .mobile-accent-line {
+        width: 48px;
+        height: 4px;
+        background-color: #D97736;
+        border-radius: 2px;
+        margin-top: 0.75rem;
+        margin-bottom: 1.15rem;
+      }
+
+      .mobile-hero-tagline {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.92rem;
+        line-height: 1.55;
+        color: #333333;
+        margin-bottom: 1.25rem;
+        font-weight: 400;
+        text-align: left;
+      }
+
+      .mobile-typing-card {
+        margin-bottom: 1.25rem;
+        width: 100%;
+      }
+
+      .mobile-typewriter-wrapper {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(217, 119, 54, 0.25);
+        border-radius: 14px;
+        padding: 9px 15px;
+        box-shadow: 0 4px 15px rgba(217, 119, 54, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        max-width: 100%;
+        min-height: 42px;
+      }
+
+      .mobile-typewriter-text {
+        font-family: 'Bebas Neue', sans-serif !important;
+        font-size: 1.15rem;
+        letter-spacing: 0.08em;
+        color: #111111;
+        line-height: 1;
+      }
+
+      .mobile-typewriter-cursor {
+        font-family: 'Bebas Neue', sans-serif !important;
+        font-size: 1.2rem;
+        color: #D97736;
+        font-weight: bold;
+        margin-left: 3px;
+        animation: blinkCursor 0.75s step-end infinite;
+      }
+
+      @keyframes blinkCursor {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      .mobile-focus-section {
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+
+      .mobile-focus-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 0.75rem;
+      }
+
+      .mobile-focus-tick {
+        color: #D97736;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .mobile-focus-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.95rem;
+        letter-spacing: 0.18em;
+        color: #333;
+        text-transform: uppercase;
+      }
+
+      .mobile-focus-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: 100%;
+      }
+
+      .mobile-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        padding: 7px 13px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #222;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+      }
+
+      .badge-icon {
+        font-size: 0.85rem;
+      }
+
+      .badge-accent {
+        color: #D97736;
+        font-weight: 800;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+      }
+
+      .badge-label {
+        letter-spacing: 0.02em;
+      }
+
+      .mobile-hero-portrait-wrapper {
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin-top: 1.5rem;
+        min-height: 280px;
+        overflow: hidden;
+      }
+
+      .mobile-glow-backdrop {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120%;
+        height: 100%;
+        background: radial-gradient(ellipse at 50% 90%, rgba(217, 119, 54, 0.24) 0%, rgba(217, 119, 54, 0.08) 45%, transparent 75%);
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .mobile-wave-art {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .mobile-wave-art svg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
 
     .scroll-text-container {
@@ -1665,16 +2229,6 @@
       background: #ffffff;
     }
 
-    .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.5rem, 6vw, 5rem);
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      margin-bottom: 2rem;
-      color: #000;
-      text-align: center;
-    }
-
     /* About Section */
     #about {
       min-height: 100vh;
@@ -1693,13 +2247,6 @@
     .about-text {
       opacity: 0;
       transform: translateX(-50px);
-    }
-
-    .about-text h2 {
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      letter-spacing: 0.08em;
-      margin-bottom: 2rem;
-      color: #000000;
     }
 
     .about-text p {
@@ -3362,6 +3909,126 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+      <!-- Mobile Dedicated UI (Visible <= 768px) -->
+      <div class="mobile-hero-container">
+        <!-- Header Bar -->
+        <div class="mobile-header-bar">
+          <div style="flex: 1;"></div>
+          <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <line x1="4" y1="7" x2="20" y2="7"/>
+              <line x1="4" y1="12" x2="20" y2="12"/>
+              <line x1="4" y1="17" x2="20" y2="17"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Navigation Menu Drawer (3 Lines Menu Feature) -->
+        <div class="mobile-nav-drawer" id="mobileNavDrawer">
+          <a href="#home" onclick="closeMobileNav()">Home</a>
+          <a href="#about" onclick="closeMobileNav()">About</a>
+          <a href="#skills" onclick="closeMobileNav()">Skills</a>
+          <a href="certifications.html" onclick="closeMobileNav()">Certifications</a>
+          <a href="projects.html" onclick="closeMobileNav()">Work Samples</a>
+          <a href="#experience" onclick="closeMobileNav()">Experience</a>
+        </div>
+        <script>
+          function toggleMobileNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            if (drawer) drawer.classList.toggle('open');
+          }
+          function closeMobileNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            if (drawer) drawer.classList.remove('open');
+          }
+        </script>
+
+        <!-- Name Header -->
+        <div class="mobile-hero-title">
+          <h1 class="mobile-name-surya">SURYA</h1>
+          <h1 class="mobile-name-vignesh">VIGNESH</h1>
+          <div class="mobile-accent-line"></div>
+        </div>
+
+        <!-- Tagline Paragraph -->
+        <p class="mobile-hero-tagline">
+          Its-driven CS undergraduate specialising in AI/ML &mdash; building real-world intelligent applications using Python, Flask, Gemini AI, NLP, and machine learning.
+        </p>
+
+        <!-- Robotic & AI Model Capability Typing Component -->
+        <div class="mobile-typing-card">
+          <div class="mobile-typewriter-wrapper">
+            <span class="mobile-typewriter-text" id="mobileTypewriterText"></span>
+            <span class="mobile-typewriter-cursor">|</span>
+          </div>
+        </div>
+        <script>
+          (function() {
+            const phrases = [
+              "Building Intelligent Systems.",
+              "Expanding into Robotics.",
+              "Model Fine-Tuning & RAG."
+            ];
+            let phraseIdx = 0;
+            let charIdx = 0;
+            let isDeleting = false;
+            const speedTyping = 70;
+            const speedDeleting = 35;
+            const delayEnd = 1800;
+
+            function typeEffect() {
+              const el = document.getElementById('mobileTypewriterText');
+              if (!el) return;
+              const current = phrases[phraseIdx];
+
+              if (isDeleting) {
+                el.textContent = current.substring(0, charIdx - 1);
+                charIdx--;
+              } else {
+                el.textContent = current.substring(0, charIdx + 1);
+                charIdx++;
+              }
+
+              let delay = isDeleting ? speedDeleting : speedTyping;
+
+              if (!isDeleting && charIdx === current.length) {
+                delay = delayEnd;
+                isDeleting = true;
+              } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                phraseIdx = (phraseIdx + 1) % phrases.length;
+                delay = 400;
+              }
+
+              setTimeout(typeEffect, delay);
+            }
+
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', () => setTimeout(typeEffect, 600));
+            } else {
+              setTimeout(typeEffect, 600);
+            }
+          })();
+        </script>
+
+        <!-- Portrait & Ambient Art Backdrop -->
+        <div class="mobile-hero-portrait-wrapper">
+          <div class="mobile-glow-backdrop"></div>
+          <div class="mobile-wave-art">
+            <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="200" cy="350" r="100" stroke="rgba(217, 119, 54, 0.18)" stroke-width="1.2" fill="none" />
+              <circle cx="200" cy="350" r="140" stroke="rgba(217, 119, 54, 0.14)" stroke-width="1.2" fill="none" />
+              <circle cx="200" cy="350" r="180" stroke="rgba(217, 119, 54, 0.10)" stroke-width="1.2" fill="none" />
+              <circle cx="200" cy="350" r="220" stroke="rgba(217, 119, 54, 0.07)" stroke-width="1.2" fill="none" />
+              <circle cx="200" cy="350" r="260" stroke="rgba(217, 119, 54, 0.05)" stroke-width="1.2" fill="none" />
+              <path d="M-50,300 Q150,220 450,300" stroke="rgba(217,119,54,0.14)" stroke-width="1.2" fill="none"/>
+              <path d="M-50,330 Q150,250 450,330" stroke="rgba(217,119,54,0.11)" stroke-width="1.2" fill="none"/>
+              <path d="M-50,360 Q150,280 450,360" stroke="rgba(217,119,54,0.08)" stroke-width="1.2" fill="none"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
       <div class="hero-massive-overlay solid">
         <h2 class="name-surya">SURYA</h2>
         <h2 class="name-vignesh">VIGNESH</h2>
@@ -3412,12 +4079,13 @@
         <!-- Left Content -->
         <div class="about-left-content lg:w-[55%]">
           <!-- About Section Heading -->
-          <p class="text-xs font-bold tracking-[0.4em] text-[#eb7a14] mb-3 font-poppins"
-            style="text-transform:uppercase; letter-spacing:0.4em;">/&nbsp;&nbsp;About Me</p>
-          <h2
-            style="font-size: clamp(3.5rem, 8.5vw, 7.5rem); line-height: 0.88; color: #111; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; margin-bottom: 1.5rem; font-weight: 400;">
-            <span style="color: #eb7a14; font-family: 'Bebas Neue', sans-serif !important;">Intelligence</span><br>at
-            the Core
+          <div class="section-eyebrow">
+            <span class="section-eyebrow__label">About Me</span>
+            <div class="section-eyebrow__rule"></div>
+            <span class="section-eyebrow__meta">Who I Am</span>
+          </div>
+          <h2 class="section-heading section-heading--lg">
+            <span class="accent">Intelligence</span><br>at the Core
           </h2>
 
 
@@ -3615,7 +4283,14 @@
     <!-- Skills Section -->
     <section id="skills" class="sticky-stack bg-[#111]">
       <div class="skills-container">
-        <h2 style="font-family:'Bebas Neue',sans-serif; font-size: clamp(5rem, 12vw, 10rem); line-height:0.88; color: #eb7a14; letter-spacing:0.05em; text-align: center; margin-bottom: 10px;">My Skills</h2>
+        <div class="section-eyebrow section-eyebrow--center section-eyebrow--on-dark">
+          <span class="section-eyebrow__label">Toolkit</span>
+          <div class="section-eyebrow__rule"></div>
+          <span class="section-eyebrow__meta">8 Technologies</span>
+        </div>
+        <h2 class="section-heading section-heading--lg section-heading--on-dark">
+          My <span class="accent">Skills</span>
+        </h2>
         <p class="skills-description">Hover to glow, Click to see details</p>
         
         <div class="led-board">
@@ -3653,17 +4328,15 @@
         class="relative z-20 mx-auto px-6 h-full w-full flex flex-col justify-center items-center pointer-events-none"
         style="background: radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 45%, transparent 100%);">
         <div class="text-center" style="transform: translateY(-5vh);">
-          <div class="flex items-center justify-center gap-4 mb-4">
-            <span class="font-bebas text-sm tracking-[0.35em] text-[#eb7a14] uppercase">Credentials</span>
-            <div class="w-12 h-[1px] bg-black/10"></div>
-            <span class="font-bebas text-sm tracking-[0.35em] text-black/40 uppercase">10 Certificates</span>
+          <div class="section-eyebrow section-eyebrow--center">
+            <span class="section-eyebrow__label">Credentials</span>
+            <div class="section-eyebrow__rule"></div>
+            <span class="section-eyebrow__meta">10 Certificates</span>
           </div>
-          <h2 class="font-bebas text-black tracking-widest leading-none mb-3"
-            style="text-shadow: 0px 4px 20px rgba(255,255,255,1); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: bold;">
-            <span style="color: #eb7a14; font-family: 'Bebas Neue', sans-serif !important; font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">Professional</span>
-            Credentials
+          <h2 class="section-heading" style="text-shadow: 0px 4px 20px rgba(255,255,255,1);">
+            <span class="accent">Professional</span> Credentials
           </h2>
-          <p class="font-inter text-sm md:text-base text-black/80 tracking-widest uppercase mb-6 font-bold">
+          <p class="section-sub">
             Verified academic & technical achievements
           </p>
           <!-- View All Button -->
@@ -3849,16 +4522,15 @@
       <div class="projects-container-new">
         <div class="flex flex-col w-full max-w-[1200px] mx-auto px-4 mb-8">
           <!-- Work Samples Heading -->
-          <p class="text-xs font-bold tracking-[0.4em] text-[#eb7a14] mb-2 font-poppins"
-            style="text-transform:uppercase;">/&nbsp;&nbsp;Selected Work&nbsp;&nbsp;—&nbsp;&nbsp;<span
-              style="color:rgba(0,0,0,0.4); font-family:'Bebas Neue',sans-serif;">10 Projects</span></p>
-          <h2
-            style="font-family:'Bebas Neue',sans-serif; font-size: clamp(3.5rem, 8vw, 7.5rem); line-height:0.88; color:#111; letter-spacing:0.04em; margin-bottom: 0.4rem;">
-            <span style="color: #eb7a14; font-family: 'Bebas Neue', sans-serif;">Work</span> Samples
+          <div class="section-eyebrow">
+            <span class="section-eyebrow__label">Selected Work</span>
+            <div class="section-eyebrow__rule"></div>
+            <span class="section-eyebrow__meta">10 Projects</span>
+          </div>
+          <h2 class="section-heading section-heading--lg">
+            <span class="accent">Work</span> Samples
           </h2>
-          <p
-            style="font-family:'Inter',sans-serif; font-size:0.85rem; color:rgba(0,0,0,0.45); letter-spacing:0.12em; text-transform:uppercase; font-weight:500;">
-            Explore →</p>
+          <p class="section-sub">Explore →</p>
         </div>
         <!-- Horizontal Scroll Wrapper -->
         <div class="projects-scroll-wrapper" id="projectsScrollWrapper">
@@ -4029,17 +4701,13 @@
 
       <!-- Section Header -->
       <div class="mb-12">
-        <div class="flex items-center gap-4 mb-4">
-          <span
-            style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.35em; color: #eb7a14; text-transform: uppercase;">Background</span>
-          <div class="flex-1 h-[1px] bg-black/10"></div>
-          <span
-            style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.35em; color: rgba(0,0,0,0.35);">1
-            Role</span>
+        <div class="section-eyebrow">
+          <span class="section-eyebrow__label">Background</span>
+          <div class="section-eyebrow__rule"></div>
+          <span class="section-eyebrow__meta">1 Role</span>
         </div>
-        <h2
-          style="font-family: 'Bebas Neue', sans-serif; font-weight: bold; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: #000; margin: 0;">
-          Professional <span style="color: #eb7a14; font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">Experience</span>
+        <h2 class="section-heading">
+          Professional <span class="accent">Experience</span>
         </h2>
       </div>
 
@@ -4108,22 +4776,25 @@
       
       <!-- Section Header -->
       <div class="mb-12">
-        <div class="flex items-center gap-4 mb-4">
-          <span style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.35em; color: #eb7a14; text-transform: uppercase;">Contact</span>
-          <div class="flex-1 h-[1px] bg-black/10"></div>
-          <span style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.35em; color: rgba(0,0,0,0.35);">Get in touch</span>
+        <div class="section-eyebrow">
+          <span class="section-eyebrow__label">Contact</span>
+          <div class="section-eyebrow__rule"></div>
+          <span class="section-eyebrow__meta">Get in touch</span>
         </div>
-        <h2 style="font-family: 'Bebas Neue', sans-serif; font-weight: bold; font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: #000; margin: 0;">
-          Let's Work <span style="color: #eb7a14; font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">Together</span>
+        <h2 class="section-heading">
+          Let's Work <span class="accent">Together</span>
         </h2>
       </div>
 
+      <!-- Card + character, composed as one unit -->
+      <div class="contact-composition" id="contactComposition">
+
       <!-- Contact Skeuomorphic Form Card -->
-      <div class="relative w-full rounded-2xl overflow-hidden transition-transform duration-500 hover:-translate-y-2 pointer-events-auto"
-        style="background: linear-gradient(145deg, #2b2b2b, #1a1a1a); 
-                  border: 1px solid #333; 
+      <div class="contact-composition__card relative w-full rounded-2xl overflow-hidden pointer-events-auto"
+        style="background: linear-gradient(145deg, #2b2b2b, #1a1a1a);
+                  border: 1px solid #333;
                   box-shadow: 10px 10px 30px rgba(0,0,0,0.3), inset 1px 1px 2px rgba(255,255,255,0.08);">
-        
+
         <div class="p-8 md:p-12 relative z-10">
           <form onsubmit="event.preventDefault(); alert('Message Sent!'); this.reset();" class="flex flex-col gap-6">
             
@@ -4151,6 +4822,23 @@
             </button>
           </form>
         </div>
+      </div>
+
+        <!-- 3D character — decorative, sits to the right and leans on the card.
+             Drop the rendered asset in as `contact-character.png` (transparent
+             PNG/WebP cutout). For the animated version, swap this <img> for:
+               <video class="contact-character__media" autoplay muted loop
+                      playsinline poster="contact-character.png">
+                 <source src="contact-character.webm" type="video/webm">
+                 <source src="contact-character.mp4"  type="video/mp4">
+               </video>
+             Until the file exists the column removes itself (see .no-character). -->
+        <div class="contact-character" aria-hidden="true">
+          <div class="contact-character__shadow"></div>
+          <img class="contact-character__media" src="contact-character.png" alt=""
+            onerror="document.getElementById('contactComposition').classList.add('no-character')">
+        </div>
+
       </div>
 
     </div>
@@ -4807,11 +5495,9 @@
 
     // Typewriter effect
     const phrases = [
-      "Turning Ideas into Products.",
       "Building Intelligent Systems.",
-      "AI/ML Developer.",
-      "Full Stack Engineer.",
-      "CS Student @ VIT · CGPA 9.18"
+      "Expanding into Robotics.",
+      "Model Fine-Tuning & RAG."
     ];
     let phraseIndex = 0;
     let charIndex = 0;

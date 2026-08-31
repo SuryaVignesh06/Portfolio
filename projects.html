@@ -48,26 +48,34 @@
     .page-header .label-row .line {
       flex: 1;
       height: 1px;
-      background: rgba(0,0,0,0.12);
+      background: rgba(0,0,0,0.1);
     }
 
     .page-header .label-row .count {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 0.85rem;
       letter-spacing: 0.35em;
+      text-transform: uppercase;
       color: rgba(0,0,0,0.35);
     }
 
+    /* Matches the canonical .section-heading--lg scale in index.html */
     .page-header h1 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3.5rem, 8vw, 7rem);
-      letter-spacing: 0.03em;
-      line-height: 1;
-      color: #000;
+      font-weight: bold;
+      font-size: clamp(3.5rem, 8vw, 7.5rem);
+      letter-spacing: 0.04em;
+      line-height: 0.9;
+      text-transform: uppercase;
+      color: #111;
       margin-bottom: 1rem;
     }
 
-    .page-header h1 .accent { color: #eb7a14; }
+    .page-header h1 .accent {
+      color: #eb7a14;
+      font-weight: bold;
+      -webkit-text-stroke: 0.4px #eb7a14;
+    }
 
     .page-header .subtitle {
       font-size: 1rem;

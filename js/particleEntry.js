@@ -72,11 +72,11 @@ class ParticleSystem3D {
       }
 
       // Immediately reveal hero image and all hero text elements
-      const heroImgWrap = document.querySelector('.hero-image');
-      if (heroImgWrap) heroImgWrap.style.opacity = '1';
+      const heroImgWrap = document.querySelectorAll('.hero-image, .mobile-hero-image-box');
+      heroImgWrap.forEach(wrap => wrap.style.opacity = '1');
 
       const heroEls = document.querySelectorAll(
-        '.hero-massive-overlay, .hero-tagline-small, .hero-right-text, .hero-name, .hero-tagline, .hero-bottom-left, .hero-bottom-right'
+        '.hero-massive-overlay, .hero-tagline-small, .hero-right-text, .hero-name, .hero-tagline, .hero-bottom-left, .hero-bottom-right, .mobile-hero-container'
       );
       heroEls.forEach(el => el.classList.add('hero-animated'));
 

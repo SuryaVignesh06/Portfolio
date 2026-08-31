@@ -15,7 +15,66 @@
     }
     .font-bebas { font-family: 'Bebas Neue', sans-serif; }
     .font-poppins { font-family: 'Poppins', sans-serif; }
-    
+
+    /* ===== CANONICAL SECTION HEADING SYSTEM (mirrors index.html) ===== */
+    .section-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-eyebrow__label,
+    .section-eyebrow__meta {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .section-eyebrow__label { color: #eb7a14; }
+    .section-eyebrow__meta { color: rgba(0, 0, 0, 0.35); }
+
+    .section-eyebrow__rule {
+      flex: 1;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .section-eyebrow--center { justify-content: center; }
+    .section-eyebrow--center .section-eyebrow__rule { flex: 0 0 3rem; }
+
+    .section-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: bold;
+      font-size: clamp(3rem, 6vw, 5rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #111;
+      margin: 0 0 1rem;
+    }
+
+    /* Major section openers */
+    .section-heading--lg { font-size: clamp(3.5rem, 8vw, 7.5rem); }
+
+    .section-heading .accent {
+      color: #eb7a14;
+      font-weight: bold;
+      -webkit-text-stroke: 0.4px #eb7a14;
+    }
+
+    .section-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, 0.45);
+      margin: 0;
+    }
+
     .cert-card {
       background: white;
       border-radius: 24px;
@@ -93,9 +152,13 @@
   <!-- Header Section -->
   <header class="pt-32 pb-16 header-bg">
     <div class="grid-container text-center">
-      <p class="font-poppins text-[#eb7a14] font-bold tracking-[0.4em] uppercase text-xs mb-4">Credentials & Achievements</p>
-      <h1 class="font-bebas text-7xl md:text-9xl text-black leading-none mb-6 tracking-tight font-bold">
-        Professional <span class="text-[#eb7a14]" style="font-weight: bold; -webkit-text-stroke: 0.4px #eb7a14;">Credentials</span>
+      <div class="section-eyebrow section-eyebrow--center">
+        <span class="section-eyebrow__label">Credentials</span>
+        <div class="section-eyebrow__rule"></div>
+        <span class="section-eyebrow__meta">10 Certificates</span>
+      </div>
+      <h1 class="section-heading section-heading--lg">
+        <span class="accent">Professional</span> Credentials
       </h1>
       <div class="w-24 h-1 bg-[#eb7a14] mx-auto opacity-50"></div>
     </div>
